@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 
 import java.util.List;
 
@@ -20,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 import timber.log.Timber;
 import xyz.madki.clask.R;
 import xyz.madki.clask.api.models.Member;
@@ -52,14 +56,23 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     holder.tvEmail.setText(member.profile().email());
     holder.tvNumber.setText(member.profile().phone());
     holder.tvSkype.setText(member.profile().skype());
-    Glide.with(holder.profilePic.getContext()).load(member.profile().image72()).into(holder.profilePic);
-    if(member.profile().phone() == null) {
+    Glide.with(holder.profilePic.getContext())
+            .load(member.profile().image72())
+            .into(holder.profilePic);
+
+    //set visiblities of details
+    if(TextUtils.isEmpty(member.profile().phone())) {
       holder.call.setVisibility(View.GONE);
       holder.addContact.setVisibility(View.GONE);
+      holder.tvNumber.setVisibility(View.GONE);
     } else {
       holder.call.setVisibility(View.VISIBLE);
       holder.addContact.setVisibility(View.VISIBLE);
+      holder.tvNumber.setVisibility(View.VISIBLE);
     }
+
+    setVisibilityByText(holder.tvEmail, member.profile().email());
+    setVisibilityByText(holder.tvSkype, member.profile().skype());
   }
 
   @Override
@@ -69,7 +82,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
   }
 
   public void updateMembers(List<Member> members) {
-    this.members = members;
+    Observable.from(members)
+            .filter(m -> !m.deleted() && !TextUtils.isEmpty(m.profile().realName()))
+            .toList()
+            .subscribe(list -> {this.members = list;});
     notifyDataSetChanged();
   }
 
@@ -100,6 +116,14 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         break;
       default:
         throw new IllegalStateException("Unhandled click");
+    }
+  }
+
+  private static void setVisibilityByText(TextView textView, String text) {
+    if(TextUtils.isEmpty(text)) {
+      textView.setVisibility(View.GONE);
+    } else {
+      textView.setVisibility(View.VISIBLE);
     }
   }
 
