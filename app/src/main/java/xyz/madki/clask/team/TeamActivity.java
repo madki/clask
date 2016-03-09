@@ -2,6 +2,7 @@ package xyz.madki.clask.team;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public class TeamActivity extends PresentedActivity<TeamPresenter, TeamActivity.
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    members.setLayoutManager(new LinearLayoutManager(this));
     members.setAdapter(adapter);
   }
 
