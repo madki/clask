@@ -47,7 +47,7 @@ public class TeamPresenter extends BasePresenter<TeamPresenter.IView> {
               slackApi.getMembers(team.accessToken())
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
-                      .subscribe(members.asAction())
+                      .subscribe(members.asAction(), this::error)
       );
     }
 
@@ -55,9 +55,13 @@ public class TeamPresenter extends BasePresenter<TeamPresenter.IView> {
             members.asObservable()
                     .filter(members1 -> members1 != null)
                     .map(Members::members)
-                    .doOnNext(m -> Timber.d(gson.toJson(m)))
-                    .subscribe(adapter::updateMembers)
+                    .doOnNext(m -> Timber.d(" " + m))
+                    .subscribe(adapter::updateMembers, this::error)
     );
+  }
+
+  private void error(Throwable t) {
+
   }
 
   @Override
