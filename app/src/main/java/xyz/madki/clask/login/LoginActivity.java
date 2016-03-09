@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -58,6 +59,14 @@ public class LoginActivity extends PresentedActivity<LoginPresenter, LoginActivi
 
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+    webView.setWebChromeClient(new WebChromeClient() {
+      @Override
+      public void onProgressChanged(WebView view, int newProgress) {
+        progressBar.setProgress(newProgress * 100);
+      }
+    });
+
     webView.setWebViewClient(new WebViewClient() {
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
