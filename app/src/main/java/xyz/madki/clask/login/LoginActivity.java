@@ -74,12 +74,12 @@ public class LoginActivity extends PresentedActivity<LoginPresenter, LoginActivi
 
   @Override
   public void showLoading() {
-    Toast.makeText(this, "Loading", Toast.LENGTH_LONG).show();
+    Toast.makeText(this, "Logging you in.", Toast.LENGTH_LONG).show();
   }
 
   @Override
   public void showError() {
-    Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
+    Toast.makeText(this, "Sorry, something went wrong. Please try again.", Toast.LENGTH_LONG).show();
   }
 
   @Override
