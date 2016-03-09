@@ -41,12 +41,14 @@ public class SplashActivity extends PresentedActivity<SplashPresenter, SplashAct
   public void toLogin() {
     Intent intent = new Intent(this, LoginActivity.class);
     startActivity(intent);
+    finish();
   }
 
   @Override
   public void toTeam() {
     Intent intent = new Intent(this, TeamActivity.class);
     startActivity(intent);
+    finish();
   }
 
   @PerActivity

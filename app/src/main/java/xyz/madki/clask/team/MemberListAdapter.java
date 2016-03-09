@@ -1,5 +1,8 @@
 package xyz.madki.clask.team;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,6 +53,13 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     holder.tvNumber.setText(member.profile().phone());
     holder.tvSkype.setText(member.profile().skype());
     Glide.with(holder.profilePic.getContext()).load(member.profile().image72()).into(holder.profilePic);
+    if(member.profile().phone() == null) {
+      holder.call.setVisibility(View.GONE);
+      holder.addContact.setVisibility(View.GONE);
+    } else {
+      holder.call.setVisibility(View.VISIBLE);
+      holder.addContact.setVisibility(View.VISIBLE);
+    }
   }
 
   @Override
@@ -75,9 +85,15 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
   @Override
   public void onClick(View v, int position) {
     if(!isValidPosition(position)) return;
+    Member member = getItem(position);
     switch (v.getId()) {
       case R.id.btn_call:
-        Toast.makeText(v.getContext(), "Call " + getItem(position).name(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + member.profile().phone()));
+        try {
+          v.getContext().startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+          Toast.makeText(v.getContext(), "Sorry, unable to open dialer", Toast.LENGTH_LONG).show();
+        }
         break;
       case R.id.btn_add_contact:
         Toast.makeText(v.getContext(), "Add " + getItem(position).name(), Toast.LENGTH_LONG).show();
