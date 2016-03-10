@@ -15,7 +15,7 @@
         android:scaleType="fitXY"
         android:background="@color/colorAccent"
         android:contentDescription="@string/profile_pic"
-        tools:src="@color/light_gray"
+        tools:src="@color/colorAccent"
         />
 
     <TextView
