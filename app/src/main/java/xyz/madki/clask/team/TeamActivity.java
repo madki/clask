@@ -23,7 +23,7 @@ import xyz.madki.clask.base.PresentedActivity;
 import xyz.madki.clask.scope.PerActivity;
 
 public class TeamActivity extends PresentedActivity<TeamPresenter, TeamActivity.Component>
-                          implements TeamPresenter.IView, TextWatcher {
+        implements TeamPresenter.IView, TextWatcher {
   @Inject TeamPresenter presenter;
   @Inject MemberListAdapter adapter;
   @Bind(R.id.rv_member_list) RecyclerView members;
@@ -36,6 +36,15 @@ public class TeamActivity extends PresentedActivity<TeamPresenter, TeamActivity.
     members.setAdapter(adapter);
     searchBox.addTextChangedListener(this);
     searchBox.setVisibility(adapter.isSearchBoxVisible() ? View.VISIBLE : View.GONE);
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (adapter.isSearchBoxVisible()) {
+      hideSearchBox();
+    } else {
+      super.onBackPressed();
+    }
   }
 
   @Override
@@ -53,16 +62,24 @@ public class TeamActivity extends PresentedActivity<TeamPresenter, TeamActivity.
         return true;
       case R.id.search:
         if (adapter.isSearchBoxVisible()) {
-          searchBox.setText("");
-          searchBox.setVisibility(View.GONE);
-          adapter.setSearchBoxVisible(false);
+          hideSearchBox();
         } else {
-          searchBox.setVisibility(View.VISIBLE);
-          adapter.setSearchBoxVisible(true);
+          showSearchBox();
         }
         return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  private void hideSearchBox() {
+    searchBox.setText("");
+    searchBox.setVisibility(View.GONE);
+    adapter.setSearchBoxVisible(false);
+  }
+
+  private void showSearchBox() {
+    searchBox.setVisibility(View.VISIBLE);
+    adapter.setSearchBoxVisible(true);
   }
 
   @Override
@@ -77,6 +94,7 @@ public class TeamActivity extends PresentedActivity<TeamPresenter, TeamActivity.
             .appComponent(App.component(this))
             .build();
   }
+
 
   @NonNull
   @Override

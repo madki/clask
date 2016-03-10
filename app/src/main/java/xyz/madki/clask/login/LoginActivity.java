@@ -95,6 +95,7 @@ public class LoginActivity extends PresentedActivity<LoginPresenter, LoginActivi
   public void onLoginSuccess() {
     Intent intent = new Intent(this, TeamActivity.class);
     startActivity(intent);
+    finish();
   }
 
   @PerActivity
